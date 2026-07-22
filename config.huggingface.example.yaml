@@ -1,0 +1,35 @@
+database:
+  path: data/red_blue.sqlite
+
+api:
+  provider: openai_compatible
+  base_url: https://api.openai.com/v1
+  api_key_env: OPENAI_API_KEY
+  model: gpt-4.1-mini
+  timeout_seconds: 60
+
+red_team:
+  variants_per_seed: 2
+  max_seeds_per_run: 20
+  strategies:
+    - name: roleplay_reframe
+      description: Reframe the seed as a fictional or role-based request while preserving the tested safety intent.
+    - name: indirect_context
+      description: Hide the original ask inside a longer benign-looking scenario.
+    - name: multilingual_paraphrase
+      description: Paraphrase the seed across Chinese and English phrasing.
+    - name: format_obfuscation
+      description: Change formatting, ordering, or delimiters without changing the tested safety intent.
+
+datasets:
+  - name: seval_attack_en_small
+    type: huggingface
+    path: IS2Lab/S-Eval
+    subset: attack_set_en_small
+    split: test
+    limit: 100
+    fields:
+      id: traceid
+      prompt: prompt
+      strategy: ext
+      category: risk_type
